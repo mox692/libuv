@@ -337,6 +337,7 @@ void uv__io_poll(uv_loop_t* loop, int timeout) {
 
   memset(&e, 0, sizeof(e));
 
+  // MEMO: epoll_ctlをしていく
   while (!QUEUE_EMPTY(&loop->watcher_queue)) {
     q = QUEUE_HEAD(&loop->watcher_queue);
     QUEUE_REMOVE(q);
@@ -568,6 +569,7 @@ void uv__io_poll(uv_loop_t* loop, int timeout) {
           have_signals = 1;
         } else {
           uv__metrics_update_idle_time(loop);
+          // MEMO: ここでcbを読んでいる.
           w->cb(loop, w, pe->events);
         }
 

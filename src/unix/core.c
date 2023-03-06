@@ -347,10 +347,11 @@ int uv_backend_fd(const uv_loop_t* loop) {
 }
 
 
+// MEMO: 
 static int uv__loop_alive(const uv_loop_t* loop) {
-  return uv__has_active_handles(loop) ||
-         uv__has_active_reqs(loop) ||
-         !QUEUE_EMPTY(&loop->pending_queue) ||
+  return uv__has_active_handles(loop) || // activeなハンドルがあるか
+         uv__has_active_reqs(loop) ||    // activeなrequestがあるか
+         !QUEUE_EMPTY(&loop->pending_queue) || // pending_queue が空でないか
          loop->closing_handles != NULL;
 }
 
@@ -381,6 +382,7 @@ int uv_loop_alive(const uv_loop_t* loop) {
 }
 
 
+// MEMO: 全てのエントリポイント
 int uv_run(uv_loop_t* loop, uv_run_mode mode) {
   int timeout;
   int r;
@@ -388,7 +390,7 @@ int uv_run(uv_loop_t* loop, uv_run_mode mode) {
 
   r = uv__loop_alive(loop);
   if (!r)
-    uv__update_time(loop);
+    uv__update_time(loop); // non-activeだったら、時間を更新
 
   while (r != 0 && loop->stop_flag == 0) {
     uv__update_time(loop);

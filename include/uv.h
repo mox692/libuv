@@ -1832,6 +1832,7 @@ union uv_any_req {
 #undef XX
 
 
+// MEMO: loopの内部情報(handler, request, queue etc...)を保持
 struct uv_loop_s {
   /* User data - use this for whatever. */
   void* data;

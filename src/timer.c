@@ -165,16 +165,20 @@ void uv__run_timers(uv_loop_t* loop) {
   uv_timer_t* handle;
 
   for (;;) {
+    // MEMO: 多分一番timerが小さいやつを取ってきてる？
     heap_node = heap_min(timer_heap(loop));
     if (heap_node == NULL)
       break;
 
     handle = container_of(heap_node, uv_timer_t, heap_node);
+    //  MEMO: 一番timeoutが近いタイマーでさえtimeoutになってなかったら、break.
     if (handle->timeout > loop->time)
       break;
 
+    // このloopで扱っているtimerはタイムアウトしている
     uv_timer_stop(handle);
     uv_timer_again(handle);
+    // cbを読んでいる
     handle->timer_cb(handle);
   }
 }
